@@ -25,7 +25,7 @@
 *作者：最帅的张博闻
 *copyright:张博闻产业有限公司
 ***************************************************/
-Motor::Motor(int no){
+Motor::Motor(uint8_t no){
 	//预设电机
     if (no == 1){
         IN1 = MOTOR_1_IN1;
@@ -52,7 +52,7 @@ Motor::Motor(int no){
 *作者：最帅的张博闻
 *copyright:张博闻产业有限公司
 ***************************************************/
-Motor::Motor(int in1, int in2, int pwm_pin){
+Motor::Motor(uint8_t in1, uint8_t in2, uint8_t pwm_pin){
 	//自己构造电机
     IN1 = in1;
     IN2 = in2;
@@ -72,7 +72,7 @@ Motor::Motor(int in1, int in2, int pwm_pin){
 *作者：最帅的张博闻
 *copyright:张博闻产业有限公司
 ***************************************************/
-void Motor::SetSpeed(int speed){
+void Motor::SetSpeed(uint8_t speed){
     analogWrite(PWM_PIN, speed);
 }
 
@@ -105,7 +105,7 @@ void Motor::Run(bool direction){
 *作者：最帅的张博闻
 *copyright:张博闻产业有限公司
 ***************************************************/
-Encoder_Motor::Encoder_Motor(int no, int am, int bm):Motor(no){
+Encoder_Motor::Encoder_Motor(uint8_t no, uint8_t am, uint8_t bm):Motor(no){
 	AM = am;
 	BM = bm;
 	pinMode(AM, INPUT);
@@ -120,7 +120,7 @@ Encoder_Motor::Encoder_Motor(int no, int am, int bm):Motor(no){
 *作者：最帅的张博闻
 *copyright:张博闻产业有限公司
 ***************************************************/
-Encoder_Motor::Encoder_Motor(int in1, int in2, int pwm_pin, int am, int bm):Motor(in1, in2, pwm_pin){
+Encoder_Motor::Encoder_Motor(uint8_t in1, uint8_t in2, uint8_t pwm_pin, uint8_t am, uint8_t bm):Motor(in1, in2, pwm_pin){
 	AM = am;
 	BM = bm;
 	pinMode(AM, INPUT);
@@ -149,15 +149,13 @@ void Encoder_Motor::init(FuncPtr Encoder_func){
 *作者：最帅的张博闻
 *copyright:张博闻产业有限公司
 ***************************************************/
-float Encoder_Motor::Get_Rad(volatile int &count){
-	times = millis();
-	if (abs(times - old_time) >= 50)
-	{
-		// Serial.println(count);
-		n = count*20.00/1040.00;
-		count = 0;
-		old_time = millis();
-		// Serial.println(n);
-	}
+float Encoder_Motor::Get_Rad(volatile uint32_t &count){
+	new_time = millis();
+	times = new_time - old_time;
+	// Serial.println(count);
+	n = count*1000.00/times/1040.00;
+	count = 0;
+	old_time = millis();
+	Serial.println(n);
 	return n;
 }

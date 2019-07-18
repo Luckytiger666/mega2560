@@ -28,12 +28,12 @@ typedef void (*FuncPtr)(void);
 class Motor
 {
 private:
-    int IN1,IN2,PWM_PIN;
+    uint8_t IN1,IN2,PWM_PIN;
 public:
     friend class Move;
-    Motor(int no);
-    Motor(int in1, int in2, int pwm_pin);
-    void SetSpeed(int speed);
+    Motor(uint8_t no);
+    Motor(uint8_t in1, uint8_t in2, uint8_t pwm_pin);
+    void SetSpeed(uint8_t speed);
     void Run(bool direction);
     //~Motor();
 };
@@ -41,17 +41,17 @@ public:
 
 class Encoder_Motor:public Motor{
 private:
-  int AM,BM;
-  unsigned int old_time = 0;
-  unsigned int new_time;
-  unsigned int times; //时间变量
+  uint8_t AM,BM;
+  uint32_t old_time = 0;
+  uint32_t new_time;
+  uint32_t times; //时间变量
   float n; // 用来存储转速的变量
 //   FuncPtr func = NULL;
 public:
-  Encoder_Motor(int no, int am, int bm = 0);
-  Encoder_Motor(int in1, int in2, int pwm_pin, int am, int bm = 0);
+  Encoder_Motor(uint8_t no, uint8_t am, uint8_t bm = 0);
+  Encoder_Motor(uint8_t in1, uint8_t in2, uint8_t pwm_pin, uint8_t am, uint8_t bm = 0);
   void init(FuncPtr Encoder_func);
-  float Get_Rad(volatile int &count);//获取转速
+  float Get_Rad(volatile uint32_t &count);//获取转速
 };
 
 
