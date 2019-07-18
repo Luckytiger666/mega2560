@@ -24,13 +24,17 @@ enum Posture{Straight, LeftAvertence, RightAvertence};
 typedef void (*FuncPtr)(void);
 
 
-//电机类
+/**
+ * 说明：Motor类
+ * 成员函数：SetSpeed() 设置电机速度，Run()电机运行
+ * 作者：最帅的张博闻
+ * Copyright:张博闻产业有限公司
+ */
 class Motor
 {
 private:
     uint8_t IN1,IN2,PWM_PIN;
 public:
-    friend class Move;
     Motor(uint8_t no);
     Motor(uint8_t in1, uint8_t in2, uint8_t pwm_pin);
     void SetSpeed(uint8_t speed);
@@ -39,6 +43,13 @@ public:
 };
 
 
+/**
+ * 说明：编码电机类
+ * 成员函数：init()函数:其他地方定义中断函数，用init初始化
+ *         GetRad()函数:用来获取电机单位时间里的转速
+ * 作者：最帅的张博闻
+ * Copyright:张博闻产业有限公司
+ */
 class Encoder_Motor:public Motor{
 private:
   uint8_t AM,BM;
@@ -51,7 +62,7 @@ public:
   Encoder_Motor(uint8_t no, uint8_t am, uint8_t bm = 0);
   Encoder_Motor(uint8_t in1, uint8_t in2, uint8_t pwm_pin, uint8_t am, uint8_t bm = 0);
   void init(FuncPtr Encoder_func);
-  float Get_Rad(volatile uint32_t &count);//获取转速
+  float GetRad(volatile uint32_t &count);//获取转速
 };
 
 
