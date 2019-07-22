@@ -1,5 +1,5 @@
-#ifndef _MOVE__H
-#define _MOVE__H
+#ifndef _MOTOR__H
+#define _MOTOR__H
 
 
 #include <Arduino.h>
@@ -13,9 +13,11 @@
 #define MOTOR_1_IN1 22
 #define MOTOR_1_IN2 23
 #define MOTOR_1_PWM_PIN 3
+#define MOTOR_1_AM 2
 #define MOTOR_2_IN1 11
 #define MOTOR_2_IN2 12
 #define MOTOR_2_PWM_PIN 5
+#define MOTOR_2_AM 0
 
 
 //自定义类型, 用来表示小车的姿态
@@ -33,7 +35,7 @@ typedef void (*FuncPtr)(void);
 class Motor
 {
 private:
-    uint8_t IN1,IN2,PWM_PIN;
+    uint8_t in1_,in2_,pwm_pin_;
 public:
     Motor(uint8_t no);
     Motor(uint8_t in1, uint8_t in2, uint8_t pwm_pin);
@@ -52,15 +54,15 @@ public:
  */
 class Encoder_Motor:public Motor{
 private:
-  uint8_t AM,BM;
+  uint8_t AM;
   uint32_t old_time = 0;
   uint32_t new_time;
   uint32_t times; //时间变量
   float n; // 用来存储转速的变量
 //   FuncPtr func = NULL;
 public:
-  Encoder_Motor(uint8_t no, uint8_t am, uint8_t bm = 0);
-  Encoder_Motor(uint8_t in1, uint8_t in2, uint8_t pwm_pin, uint8_t am, uint8_t bm = 0);
+  Encoder_Motor(uint8_t no, uint8_t am);
+  Encoder_Motor(uint8_t in1, uint8_t in2, uint8_t pwm_pin, uint8_t am);
   void init(FuncPtr Encoder_func);
   float GetRad(volatile uint32_t &count);//获取转速
 };

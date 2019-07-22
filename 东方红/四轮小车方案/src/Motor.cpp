@@ -30,20 +30,20 @@
 Motor::Motor(uint8_t no){
 	//预设电机
     if (no == 1){
-        IN1 = MOTOR_1_IN1;
-        IN2 = MOTOR_1_IN2;
-        PWM_PIN = MOTOR_1_PWM_PIN;
+        in1_ = MOTOR_1_IN1;
+        in2_ = MOTOR_1_IN2;
+        pwm_pin_ = MOTOR_1_PWM_PIN;
     }
     else if (no == 2){
-        IN1 = MOTOR_2_IN1;
-        IN2 = MOTOR_2_IN2;
-        PWM_PIN = MOTOR_2_PWM_PIN;
+        in1_ = MOTOR_2_IN1;
+        in2_ = MOTOR_2_IN2;
+        pwm_pin_ = MOTOR_2_PWM_PIN;
     }
 	//定义引脚
 	pinMode(STBY, OUTPUT);
-	pinMode(PWM_PIN, OUTPUT);
-	pinMode(IN1, OUTPUT);
-	pinMode(IN2, OUTPUT);
+	pinMode(pwm_pin_, OUTPUT);
+	pinMode(in1_, OUTPUT);
+	pinMode(in2_, OUTPUT);
 }
 
 
@@ -56,14 +56,14 @@ Motor::Motor(uint8_t no){
 ***************************************************/
 Motor::Motor(uint8_t in1, uint8_t in2, uint8_t pwm_pin){
 	//自己构造电机
-    IN1 = in1;
-    IN2 = in2;
-    PWM_PIN = pwm_pin;
+    in1_ = in1;
+    in2_ = in2;
+    pwm_pin_ = pwm_pin;
 	//定义引脚
 	pinMode(STBY, OUTPUT);
-	pinMode(PWM_PIN, OUTPUT);
-	pinMode(IN1, OUTPUT);
-	pinMode(IN2, OUTPUT);
+	pinMode(pwm_pin_, OUTPUT);
+	pinMode(in1_, OUTPUT);
+	pinMode(in2_, OUTPUT);
 }
 
 
@@ -75,7 +75,7 @@ Motor::Motor(uint8_t in1, uint8_t in2, uint8_t pwm_pin){
 *copyright:张博闻产业有限公司
 ***************************************************/
 void Motor::SetSpeed(uint8_t speed){
-    analogWrite(PWM_PIN, speed);
+    analogWrite(pwm_pin_, speed);
 }
 
 
@@ -89,13 +89,13 @@ void Motor::SetSpeed(uint8_t speed){
 void Motor::Run(bool direction){
     if (direction == FORWORD){
       	digitalWrite(STBY, HIGH);
-        digitalWrite(IN1, HIGH);
-        digitalWrite(IN2, LOW);
+        digitalWrite(in1_, HIGH);
+        digitalWrite(in2_, LOW);
     }
     else if (direction == BACKWORD){
       	digitalWrite(STBY, HIGH);
-        digitalWrite(IN1, LOW);
-        digitalWrite(IN2, HIGH);
+        digitalWrite(in1_, LOW);
+        digitalWrite(in2_, HIGH);
     }
 }
 
@@ -107,11 +107,9 @@ void Motor::Run(bool direction){
 *作者：最帅的张博闻
 *copyright:张博闻产业有限公司
 ***************************************************/
-Encoder_Motor::Encoder_Motor(uint8_t no, uint8_t am, uint8_t bm):Motor(no){
+Encoder_Motor::Encoder_Motor(uint8_t no, uint8_t am):Motor(no){
 	AM = am;
-	BM = bm;
 	pinMode(AM, INPUT);
-	pinMode(BM, INPUT);
 }
 
 
@@ -122,11 +120,9 @@ Encoder_Motor::Encoder_Motor(uint8_t no, uint8_t am, uint8_t bm):Motor(no){
 *作者：最帅的张博闻
 *copyright:张博闻产业有限公司
 ***************************************************/
-Encoder_Motor::Encoder_Motor(uint8_t in1, uint8_t in2, uint8_t pwm_pin, uint8_t am, uint8_t bm):Motor(in1, in2, pwm_pin){
+Encoder_Motor::Encoder_Motor(uint8_t in1, uint8_t in2, uint8_t pwm_pin, uint8_t am):Motor(in1, in2, pwm_pin){
 	AM = am;
-	BM = bm;
 	pinMode(AM, INPUT);
-	pinMode(BM, INPUT);
 	//attachPinChangeInterrupt(digitalPinToInterrupt(2), *(FuncPtr)(&Encoder_Motor::Code), CHANGE);
 }
 
@@ -156,10 +152,10 @@ float Encoder_Motor::GetRad(volatile uint32_t &count){
 	// new_time = millis();
 	// times = new_time - old_time;
 	// // Serial.println(count);
-	delay(10);
-	n = count*100.00/1040.00;
+	delay(100);
+	n = count*10.00/520.00;
 	count = 0;
 	old_time = millis();
-	Serial.println(n);
+	// Serial.println(n);
 	return n;
 }

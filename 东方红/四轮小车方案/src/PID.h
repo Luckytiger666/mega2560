@@ -1,5 +1,5 @@
-#ifndef PID_v1_h
-#define PID_v1_h
+#ifndef _PID__H
+#define _PID__H
 #define LIBRARY_VERSION	1.2.1
 
 
