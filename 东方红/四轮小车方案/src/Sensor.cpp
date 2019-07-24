@@ -48,7 +48,6 @@ float Ult::Range() {
 	delayMicroseconds(10);
 	digitalWrite(Trig, LOW);
 	distance = pulseIn(Echo, HIGH) / 58.00;
-	Serial.println(distance);
 	return distance;
 }
 

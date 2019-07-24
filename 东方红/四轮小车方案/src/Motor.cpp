@@ -148,14 +148,11 @@ void Encoder_Motor::init(FuncPtr Encoder_func){
 *copyright:张博闻产业有限公司
 ***************************************************/
 float Encoder_Motor::GetRad(volatile uint32_t &count){
-	count = 0;
 	// new_time = millis();
 	// times = new_time - old_time;
 	// // Serial.println(count);
-	delay(100);
-	n = count*10.00/520.00;
+	n = count*20.00/520.00;
 	count = 0;
-	old_time = millis();
 	// Serial.println(n);
 	return n;
 }

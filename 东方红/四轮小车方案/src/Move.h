@@ -7,6 +7,7 @@
 #include "Wire.h"
 #include "PID.h"
 #include "math.h"
+#include "FlexiTimer2.h"
 
 
 // TODO:为了方便调试前两个电机的引脚定义在Motor.h中
@@ -23,13 +24,15 @@
 #define FRONT_ULT_TRIG 10
 #define LEFT_FRONT_ULT_ECHO A0
 #define LEFT_FRONT_ULT_TRIG A1
-#define LEFT_BACK_ULT_ECHO 13
-#define LEFT_BACK_ULT_FRIG 14
+#define LEFT_BACK_ULT_ECHO A2
+#define LEFT_BACK_ULT_TRIG A3
 #define COUNTER_ULT_ECHO 15
-#define COUNTER_ULT_FRIG 16
+#define COUNTER_ULT_TRIG 16
+#define WIFI_TX_PIN 15
+#define WIFI_RX_PIN 14
 
 
-const float speed_pid_P = 16.00, speed_pid_I = 140.00, speed_pid_D = 0.001;
+const float speed_pid_P = 16.00, speed_pid_I = 140.00, speed_pid_D = 0.05;
 const float angle_pid_P = 16.00, angle_pid_I = 0.00, angle_pid_D = 0.00;
 const float position_pid_P = 16.00, position_pid_I = 0.00, position_pid_D = 0.00;
 extern volatile uint32_t Encoder_pluse1, Encoder_pluse2, Encoder_pluse3, Encoder_pluse4;
@@ -61,7 +64,7 @@ private:
     void Judge();
 public:
     Move();
-    void init(FuncPtr encoder1, FuncPtr encoder2, FuncPtr encoder3, FuncPtr encoder4);
+    void init(FuncPtr encoder1, FuncPtr encoder2, FuncPtr encoder3, FuncPtr encoder4, FuncPtr Runtime);
     void Gogogo();
     void StraightOn(float speed);
     // ~Move();

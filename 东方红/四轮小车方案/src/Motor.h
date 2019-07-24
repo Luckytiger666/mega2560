@@ -55,9 +55,6 @@ public:
 class Encoder_Motor:public Motor{
 private:
   uint8_t AM;
-  uint32_t old_time = 0;
-  uint32_t new_time;
-  uint32_t times; //时间变量
   float n; // 用来存储转速的变量
 //   FuncPtr func = NULL;
 public:
