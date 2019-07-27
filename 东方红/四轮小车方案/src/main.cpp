@@ -2,36 +2,28 @@
 #include "PID.h"
 
 
-
-//Define Variables we'll be connecting to
-float Setpoint, Input, Output;
 Move moc;
-volatile uint32_t Encoder_pluse1, Encoder_pluse2, Encoder_pluse3, Encoder_pluse4;
-//Specify the links and initial tuning parameters
-float Kp = 16.00, Ki = 140.00, Kd = 0.001;
-PID myPID(&Input, &Output, &Setpoint, Kp, Ki, Kd, DIRECT);
-Encoder_Motor myMotor(1, 2);
+volatile uint32_t Encoder_pluse1 = 0, Encoder_pluse2 = 0, Encoder_pluse3 = 0, Encoder_pluse4 = 0;
 void Encoder1_Code(){Encoder_pluse1++;};
-uint16_t count = 0;
-void Run(){moc.StraightOn(3.0);};
+void Encoder2_Code(){Encoder_pluse2++;};
+void Encoder3_Code(){Encoder_pluse3++;};
+void Encoder4_Code(){Encoder_pluse4++;};
+void Run_1(){moc.StraightOn_1(5.0);};
 
 
 void setup()
 {
   Serial.begin(9600);
-  Serial3.begin(9600);
-  myMotor.SetSpeed(100);
-  //Motor.Get_Rad();
-  //turn the PID on
-  myPID.SetMode(AUTOMATIC);
   //attachInterrupt(digitalPinToInterrupt(2), Encoder1_Code, CHANGE);
-  myMotor.init(Encoder1_Code);
-  moc.init(Encoder1_Code, Encoder1_Code, Encoder1_Code, Encoder1_Code, Run);
+  moc.init(Encoder1_Code, Encoder2_Code, Encoder3_Code, Encoder4_Code);
+  moc.Go();
 }
 
 
 void loop()
 {
+  // moc.StraightOn(3.0);
+  // moc.StraightOn(1.0);
   // Serial3.println("Hello");
   // Serial.println(123);
   // delay(1000);

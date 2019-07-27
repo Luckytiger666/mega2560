@@ -29,43 +29,65 @@ Move::Move(): motor1_(MOTOR_1_IN1, MOTOR_1_IN2, MOTOR_1_PWM_PIN, MOTOR_1_AM) , m
             position_pid_.SetMode(AUTOMATIC);
             position_pid_setpoint_ = 10;
             angle_pid_setpoint_ = 0;
-            left_distance_ = right_distance_ = 0;
+            angle_pid_.SetOutputLimits(-255.0F, 255.0F);
+            // left_distance_ = right_distance_ = 0;
             angle = 0;
+            speed_array_[0] = speed_array_[1] = speed_array_[2] = speed_array_[3] = 0;
         }
 
 
-void Move::init(FuncPtr encoder1, FuncPtr encoder2, FuncPtr encoder3, FuncPtr encoder4, FuncPtr Runtime){
-    motor1_.init(encoder1);
-    // motor2_.init(encoder2);
-    // motor3_.init(encoder3);
-    // motor4_.init(encoder4);
-    FlexiTimer2::set(50, Runtime);
-    FlexiTimer2::start();
+void Move::init(FuncPtr encoder1, FuncPtr encoder2, FuncPtr encoder3, FuncPtr encoder4){
+    attachInterrupt(digitalPinToInterrupt(MOTOR_1_AM), encoder1, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(MOTOR_2_AM), encoder2, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(MOTOR_3_AM), encoder3, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(MOTOR_4_AM), encoder4, CHANGE);
+    MoveFunc = Run_1;
+    motor1_.Run(FORWORD);
+    motor2_.Run(FORWORD);
+    motor3_.Run(FORWORD);
+    motor4_.Run(FORWORD);
 }
 
 
-void Move::StraightOn(float speed){
+void Move::StraightOn_1(float speed){
     //速度PID调试
     speed_pid_setpoint_ = speed;
+    left_front_distance_ =  left_front_ult_.Range();
+    left_back_distance_ = left_back_ult_.Range();
     speed_pid_input_ = motor1_.GetRad(Encoder_pluse1);
+    // Serial.println(speed_pid_input_);
     speed_pid_.Compute();
-    motor1_.Run(1);
-    motor1_.SetSpeed(speed_pid_output_);
-    Serial.println(speed_pid_input_);
-    // motor2_.SetSpeed(speed_pid_output_);
-    // speed_pid_input_ = motor2_.GetRad(Encoder_pluse1);
-    // left_PWM_ = speed_pid_output_;
-    // speed_pid_.Compute();
-    // motor3_.SetSpeed(speed_pid_output_);
-    // motor4_.SetSpeed(speed_pid_output_);
-    // right_PWM_ = speed_pid_output_;
-    //角度PID调试
-    // angle_pid_input_ = atan2(left_front_ult_.Range(), 10);
-    // angle_pid_.Compute();
-    // motor1_.SetSpeed(left_PWM_ + angle_pid_output_);
-    // motor2_.SetSpeed(left_PWM_ + angle_pid_output_);
-    // motor3_.SetSpeed(right_PWM_ - angle_pid_output_);
-    // motor4_.SetSpeed(right_PWM_ - angle_pid_output_);
+    speed_array_[0] = speed_pid_output_;
+    speed_pid_input_ = motor2_.GetRad(Encoder_pluse2);
+    speed_pid_.Compute();
+    speed_array_[1] = speed_pid_output_;
+    speed_pid_input_ = motor3_.GetRad(Encoder_pluse3);
+    // Serial.println(speed_pid_input_);
+    speed_pid_.Compute();
+    speed_array_[2] = speed_pid_output_;
+    // Serial.println(speed_pid_output_)
+    speed_pid_input_ = motor4_.GetRad(Encoder_pluse4);
+    speed_pid_.Compute();
+    speed_array_[3] = speed_pid_output_;
+    // 角度PID调试
+    angle_pid_setpoint_ = 0;
+    angle_pid_input_ = atan2((left_front_distance_ - left_back_distance_), 29.1);
+    // Serial.println(angle_pid_input_);
+    angle_pid_.Compute();
+    // Serial.println(angle_pid_output_);
+    speed_array_[0] -= angle_pid_output_;
+    speed_array_[1] -= angle_pid_output_;
+    speed_array_[2] += angle_pid_output_;
+    speed_array_[3] += angle_pid_output_;
+    if (left_front_distance_ < 10 && left_back_distance_ < 10){
+        speed_array_[2] += 20;
+        speed_array_[3] += 20;
+    }
+     if (left_front_distance_ > 10 && left_back_distance_ > 10){
+        speed_array_[0] += 20;
+        speed_array_[1] += 20;
+    } 
+    SetSpeed();
     // //距离PID调试
     // position_pid_input_ = (left_front_ult_.Range() + left_back_ult_.Range())/2;
     // position_pid_.Compute();
@@ -73,4 +95,41 @@ void Move::StraightOn(float speed){
     // motor2_.SetSpeed(left_PWM_ + position_pid_output_);
     // motor3_.SetSpeed(right_PWM_ - position_pid_output_);
     // motor4_.SetSpeed(right_PWM_ - position_pid_output_);
+}
+
+
+void Move::SetSpeed(){
+    //限幅
+    if (speed_array_[0] > 255)
+        speed_array_[0] = 255;
+    if (speed_array_[1] > 255)
+        speed_array_[1] = 255;
+    if (speed_array_[2] > 255)
+        speed_array_[2] = 255;
+    if (speed_array_[3] > 255)
+        speed_array_[3] = 255;
+    motor1_.SetSpeed(speed_array_[0] - 15); //FIXME:车身重心不稳
+    motor2_.SetSpeed(speed_array_[1] - 15);
+    motor3_.SetSpeed(speed_array_[2]);
+    motor4_.SetSpeed(speed_array_[3]);
+    // analogWrite(8, speed_array_[3]);
+    // Serial.println(speed_array_[1]);
+    // Serial.println(speed_array_[2]);
+    // Serial.println(speed_array_[3]);
+}
+
+
+void Move::Go(){
+    motor1_.Run(BACKWORD);
+    motor2_.Run(BACKWORD);
+    motor3_.Run(FORWORD);
+    motor4_.Run(FORWORD);
+    //直行时
+    FlexiTimer2::set(50, MoveFunc);
+    FlexiTimer2::start();
+    // while(front_ult_.Range() > 10);
+    // FlexiTimer2::stop();
+    // Left_90();
+    // FlexiTimer2::set(50, MoveFunc);
+    // FlexiTimer2::start();
 }

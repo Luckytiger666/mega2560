@@ -7,17 +7,16 @@
 //#include "PinChangeInt.h"
 
 
-#define STBY  10
 #define FORWORD 0
 #define BACKWORD 1
-#define MOTOR_1_IN1 22
-#define MOTOR_1_IN2 23
-#define MOTOR_1_PWM_PIN 3
-#define MOTOR_1_AM 2
-#define MOTOR_2_IN1 11
-#define MOTOR_2_IN2 12
-#define MOTOR_2_PWM_PIN 5
-#define MOTOR_2_AM 0
+#define MOTOR_1_IN1 5
+#define MOTOR_1_IN2 6
+#define MOTOR_1_PWM_PIN 7
+#define MOTOR_1_AM 20
+#define MOTOR_2_IN1 4
+#define MOTOR_2_IN2 3
+#define MOTOR_2_PWM_PIN 2
+#define MOTOR_2_AM 21
 
 
 //自定义类型, 用来表示小车的姿态
@@ -41,6 +40,7 @@ public:
     Motor(uint8_t in1, uint8_t in2, uint8_t pwm_pin);
     void SetSpeed(uint8_t speed);
     void Run(bool direction);
+    int Get_PWM_PIN(){return pwm_pin_;};
     //~Motor();
 };
 

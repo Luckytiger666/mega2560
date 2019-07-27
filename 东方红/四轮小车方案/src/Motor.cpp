@@ -40,7 +40,8 @@ Motor::Motor(uint8_t no){
         pwm_pin_ = MOTOR_2_PWM_PIN;
     }
 	//定义引脚
-	pinMode(STBY, OUTPUT);
+	// pinMode(STBY_1, OUTPUT);
+	// pinMode(STBY_2, OUTPUT);
 	pinMode(pwm_pin_, OUTPUT);
 	pinMode(in1_, OUTPUT);
 	pinMode(in2_, OUTPUT);
@@ -60,7 +61,8 @@ Motor::Motor(uint8_t in1, uint8_t in2, uint8_t pwm_pin){
     in2_ = in2;
     pwm_pin_ = pwm_pin;
 	//定义引脚
-	pinMode(STBY, OUTPUT);
+	// pinMode(STBY_1, OUTPUT);
+	// pinMode(STBY_2, OUTPUT);
 	pinMode(pwm_pin_, OUTPUT);
 	pinMode(in1_, OUTPUT);
 	pinMode(in2_, OUTPUT);
@@ -88,12 +90,14 @@ void Motor::SetSpeed(uint8_t speed){
 ***************************************************/
 void Motor::Run(bool direction){
     if (direction == FORWORD){
-      	digitalWrite(STBY, HIGH);
+      	// digitalWrite(STBY_1, HIGH);
+		// digitalWrite(STBY_2, HIGH);
         digitalWrite(in1_, HIGH);
         digitalWrite(in2_, LOW);
     }
     else if (direction == BACKWORD){
-      	digitalWrite(STBY, HIGH);
+      	// digitalWrite(STBY_1, HIGH);
+		// digitalWrite(STBY_2, HIGH);
         digitalWrite(in1_, LOW);
         digitalWrite(in2_, HIGH);
     }
@@ -151,7 +155,7 @@ float Encoder_Motor::GetRad(volatile uint32_t &count){
 	// new_time = millis();
 	// times = new_time - old_time;
 	// // Serial.println(count);
-	n = count*20.00/520.00;
+	n = count*20.00F/440.00F;
 	count = 0;
 	// Serial.println(n);
 	return n;

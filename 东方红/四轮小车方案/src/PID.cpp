@@ -23,12 +23,12 @@ PID::PID(float* Input, float* Output, float* Setpoint,
     PID::SetOutputLimits(0, 255);				//default output limit corresponds to
 												//the arduino pwm limits
 
-    SampleTime = 100;							//default Controller Sample Time is 0.1 seconds
+    SampleTime = 50;							//default Controller Sample Time is 0.1 seconds
 
     PID::SetControllerDirection(ControllerDirection);
     PID::SetTunings(Kp, Ki, Kd, POn);
 
-    lastTime = millis()-SampleTime;
+   //  lastTime = millis()-SampleTime;
 }
 
 /*Constructor (...)*********************************************************
@@ -53,10 +53,12 @@ PID::PID(float* Input, float* Output, float* Setpoint,
 bool PID::Compute()
 {
    if(!inAuto) return false;
-   unsigned long now = millis();
-   unsigned long timeChange = (now - lastTime);
-   if(timeChange>=SampleTime)
-   {
+   //采样时间由中断触发，不需要进行重复的millis()运算
+
+   // unsigned long now = millis();
+   // unsigned long timeChange = (now - lastTime);
+   // if(timeChange>=SampleTime)
+   // {
       /*Compute all the working error variables*/
       float input = *myInput;
       float error = *mySetpoint - input;
@@ -82,11 +84,11 @@ bool PID::Compute()
 	    *myOutput = output;
 
       /*Remember some variables for next time*/
-      lastInput = input;
-      lastTime = now;
+      // lastInput = input;
+      // lastTime = now;
 	    return true;
-   }
-   else return false;
+   // }
+   // else return false;
 }
 
 /* SetTunings(...)*************************************************************
